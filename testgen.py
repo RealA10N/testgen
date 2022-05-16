@@ -70,11 +70,16 @@ class TestCase(ABC):
         """ Recives an open file for writing, and writes the test case input
         data into the file. """
 
-    @abstractmethod
     def write_answer(self, answer_f: TextIO, input_f: TextIO) -> None:
         """ Recives an open file for writing, and writes the test case answer
         data into the file. Also has read access to the input file, to use with
         subprocess's run function to execute judges solution. """
+
+    def validate(self) -> None:
+        """ Called on a test case after generating it but before storing it into
+        the files. If this function raises an exception, the generation will
+        stop and an error will be shown in the terminal. Overwrite this function
+        with assertions about the test cases. """
 
 
 TestCaseT = TypeVar('TestCaseT', bound=TestCase)
@@ -164,7 +169,9 @@ class TestCollection:
         kwargs = dict()
         if 'random' in sig.parameters:
             kwargs['random'] = rnd
-        return func(**kwargs)
+        data = func(**kwargs)
+        data.validate()
+        return data
 
     def _build(
         self,
