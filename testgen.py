@@ -147,7 +147,7 @@ class TestCollection:
                 self.builders.append(
                     CollectedTestCase(
                         builder=builder,
-                        name=builder.__name__,
+                        name=builder.__name__.replace('_', '-'),
                         desc=desc,
                     )
                 )
