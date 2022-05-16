@@ -27,9 +27,13 @@ megabytes of storage on the disk. Instead of storing all those test cases,
 TESTGEN allows you to write your test generation script in such a way that will
 always output the same test cases (even if they use randomness) by using a seed
 and a well-formed order of generation. By using TESTGEN you are only required
-to store a configuration file named `tests.toml` with your test generation
+to store a configuration file named `testgen.toml` with your test generation
 script, and TESTGEN will generate the tests every time you run the generation
 script.
+
+## Usage
+
+TESTGEN is designed to be compatible with the [ICPC problem package specification](https://icpc.io/problem-package-format/).
 
 ## Example
 
