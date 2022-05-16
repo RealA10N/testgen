@@ -7,12 +7,12 @@ from dataclasses import dataclass
 class ArraySum(TestCase):
     input: list[int]
 
-    def write_in(self, file) -> None:
-        print(len(self.input), file=file)
-        print(' '.join(str(i) for i in self.input), file=file)
+    def write_in(self, input_f) -> None:
+        print(len(self.input), file=input_f)
+        print(' '.join(str(i) for i in self.input), file=input_f)
 
-    def write_ans(self, file) -> None:
-        print(sum(self.input), file=file)
+    def write_ans(self, answer_f, input_f) -> None:
+        print(sum(self.input), file=answer_f)
 
 
 MAX_ARRAY_SIZE = int(2e5)

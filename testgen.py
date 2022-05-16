@@ -66,12 +66,15 @@ class TestsConfig:
 class TestCase(ABC):
 
     @abstractmethod
-    def write_in(self, file: TextIO) -> None:
-        pass
+    def write_input(self, input_f: TextIO) -> None:
+        """ Recives an open file for writing, and writes the test case input
+        data into the file. """
 
     @abstractmethod
-    def write_ans(self, file: TextIO) -> None:
-        pass
+    def write_answer(self, answer_f: TextIO, input_f: TextIO) -> None:
+        """ Recives an open file for writing, and writes the test case answer
+        data into the file. Also has read access to the input file, to use with
+        subprocess's run function to execute judges solution. """
 
 
 TestCaseT = TypeVar('TestCaseT', bound=TestCase)
@@ -175,13 +178,14 @@ class TestCollection:
         console.log('generated test case data')
 
         in_path = os.path.join(self.folder, f'{name}.in')
-        with open(in_path, 'w', encoding='utf8') as f:
-            test.write_in(f)
+        with open(in_path, 'w', encoding='utf8') as input_f:
+            test.write_input(input_f)
         console.log(f'generated {in_path!r}')
 
         ans_path = os.path.join(self.folder, f'{name}.ans')
-        with open(ans_path, 'w', encoding='utf8') as f:
-            test.write_ans(f)
+        with open(in_path, 'r', encoding='utf8') as input_f:
+            with open(ans_path, 'w', encoding='utf8') as answer_f:
+                test.write_answer(answer_f, input_f)
         console.log(f'generated {ans_path!r}')
 
         if desc:
