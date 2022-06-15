@@ -8,7 +8,7 @@ with open("requirements.txt", mode="r", encoding="utf8") as f:
 
 setup(
     name='testgen',
-    version='0.1',
+    version='0.2',
     description='Generate random reproducible competitvie programming tests',
     author='Alon Krymgand',
     long_description=README,
