@@ -1,3 +1,7 @@
+"""  The following script is an example of a test generation script that
+uses the TESTGEN framework for the problem that sums an array of N given
+integers. """
+
 from __future__ import annotations
 from testgen import TestCase, TestCollection
 from dataclasses import dataclass
@@ -28,7 +32,7 @@ tests = TestCollection('data/secret', ArraySum)
 
 
 @tests.collect(desc='max sized array filled with ones')
-def all_zeros() -> ArraySum:
+def all_ones() -> ArraySum:
     return ArraySum([1] * MAX_ARRAY_SIZE)
 
 
