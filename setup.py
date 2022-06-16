@@ -11,8 +11,8 @@ with open("requirements.txt", mode="r", encoding="utf8") as f:
 
 setup(
     name='testgen',
-    version='0.2',
-    description='Generate random reproducible competitvie programming tests',
+    version='0.3',
+    description='Generate random reproducible competitive programming tests',
     author='Alon Krymgand',
     long_description=README + '\n' + EXAMPLE,
     long_description_content_type='text/markdown',
