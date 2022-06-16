@@ -67,11 +67,11 @@ class TestCase(ABC):
 
     @abstractmethod
     def write_input(self, input_f: TextIO) -> None:
-        """ Recives an open file for writing, and writes the test case input
+        """ Receives an open file for writing, and writes the test case input
         data into the file. """
 
     def write_answer(self, answer_f: TextIO, input_f: TextIO) -> None:
-        """ Recives an open file for writing, and writes the test case answer
+        """ Receives an open file for writing, and writes the test case answer
         data into the file. Also has read access to the input file, to use with
         subprocess's run function to execute judges solution. """
 
@@ -164,7 +164,7 @@ class TestCollection:
         return decorator
 
     @staticmethod
-    def _generte_testcase_data(func: TestCaseBuilder, rnd: Random) -> TestCaseT:
+    def _generate_testcase_data(func: TestCaseBuilder, rnd: Random) -> TestCaseT:
         sig = inspect.signature(func)
         kwargs = dict()
         if 'random' in sig.parameters:
@@ -181,7 +181,7 @@ class TestCollection:
         desc: str = None,
     ) -> None:
         console.log(f'[bold yellow]generating test case {name!r}[/]')
-        test = self._generte_testcase_data(builder, rnd)
+        test = self._generate_testcase_data(builder, rnd)
         console.log('generated test case data')
 
         in_path = os.path.join(self.folder, f'{name}.in')
