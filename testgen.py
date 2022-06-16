@@ -5,10 +5,11 @@ from math import floor, log10
 from abc import abstractmethod, ABC
 from dataclasses import dataclass, asdict
 from random import Random
-from typing import Callable, TextIO, Type, TypeVar
+from typing import Callable, Iterable, TextIO, Type, TypeVar
 import platform
 import shutil
 import inspect
+import itertools
 
 import toml
 
@@ -89,6 +90,7 @@ TestCaseBuilder = Callable[[], TestCaseT]
 @dataclass
 class CollectedTestCase:
     builder: TestCaseBuilder
+    params: dict[str, Iterable]
     name: str = None
     desc: str = None
 
@@ -146,17 +148,36 @@ class TestCollection:
         cfg.dump()
         return cfg
 
-    def collect(self, desc: str = None, repeat: int = 1) -> Callable:
+    def collect(
+        self,
+        desc: str = None,
+        repeat: int = 1,
+        params: dict[str, Iterable] = None,
+    ) -> Callable:
         """ A function that returns a decorator. The decorated function will
         be stored in the test collection. """
 
+        if params is None:
+            params = dict()
+
+        # product of all given params
+        params_gen = (
+            dict(zip(params.keys(), p))
+            for p in itertools.product(*params.values())
+        )
+
+        # duplicate params to repeat
+        params_gen = itertools.chain.from_iterable(
+            itertools.repeat(params_gen, repeat))
+
         def decorator(builder: TestCaseBuilder):
-            for _ in range(repeat):
+            for p in params_gen:
                 self.builders.append(
                     CollectedTestCase(
                         builder=builder,
                         name=builder.__name__.replace('_', '-'),
                         desc=desc,
+                        params=p,
                     )
                 )
             return builder
@@ -164,12 +185,11 @@ class TestCollection:
         return decorator
 
     @staticmethod
-    def _generate_testcase_data(func: TestCaseBuilder, rnd: Random) -> TestCaseT:
+    def _generate_testcase_data(func: TestCaseBuilder, rnd: Random, params: dict) -> TestCaseT:
         sig = inspect.signature(func)
-        kwargs = dict()
         if 'random' in sig.parameters:
-            kwargs['random'] = rnd
-        data = func(**kwargs)
+            params['random'] = rnd
+        data = func(**params)
         data.validate()
         return data
 
@@ -178,10 +198,11 @@ class TestCollection:
         builder: TestCaseBuilder,
         name: str,
         rnd: Random,
+        params: dict[str, Iterable],
         desc: str = None,
     ) -> None:
         console.log(f'[bold yellow]generating test case {name!r}[/]')
-        test = self._generate_testcase_data(builder, rnd)
+        test = self._generate_testcase_data(builder, rnd, params)
         console.log('generated test case data')
 
         in_path = os.path.join(self.folder, f'{name}.in')
@@ -229,4 +250,5 @@ class TestCollection:
                     name=name,
                     desc=case.desc,
                     rnd=rnd,
+                    params=case.params,
                 )

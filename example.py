@@ -32,6 +32,14 @@ def all_zeros() -> ArraySum:
     return ArraySum([1] * MAX_ARRAY_SIZE)
 
 
+@tests.collect(
+    desc='array filled with same values',
+    params={'length': range(1, 10), 'value': (8743, 12, 999_999)},
+)
+def same_values(length: int, value: int) -> ArraySum:
+    return ArraySum([value] * length)
+
+
 @tests.collect(desc='random max sized array', repeat=3)
 def random_list(random) -> ArraySum:
     return ArraySum(
