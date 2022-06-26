@@ -160,18 +160,13 @@ class TestCollection:
         if params is None:
             params = dict()
 
-        # product of all given params
-        params_gen = (
+        params = [
             dict(zip(params.keys(), p))
             for p in itertools.product(*params.values())
-        )
-
-        # duplicate params to repeat
-        params_gen = itertools.chain.from_iterable(
-            itertools.repeat(params_gen, repeat))
+        ] * repeat
 
         def decorator(builder: TestCaseBuilder):
-            for p in params_gen:
+            for p in params:
                 self.builders.append(
                     CollectedTestCase(
                         builder=builder,
